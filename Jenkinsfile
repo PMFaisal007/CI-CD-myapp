@@ -3,27 +3,22 @@ pipeline {
 
     stages {
 
-        stage('Clone Code') {
-            steps {
-                git 'https://github.com/your-username/your-repo.git'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t myapp:latest .'
+                bat 'docker build -t myapp .'
             }
         }
 
         stage('Stop Old Container') {
             steps {
-                sh 'docker rm -f mycontainer || true'
+                bat 'docker stop myapp-container || exit 0'
+                bat 'docker rm myapp-container || exit 0'
             }
         }
 
         stage('Run New Container') {
             steps {
-                sh 'docker run -d -p 3000:3000 --name mycontainer myapp:latest'
+                bat 'docker run -d -p 3000:3000 --name myapp-container myapp'
             }
         }
     }
